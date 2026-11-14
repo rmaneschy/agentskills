@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Release workflow can run again for the same tag: it skips a version that is already published and uploads the files to a release that already exists.
+
 ## 0.2.0 - 2026-11-13
 
 - Rewritten in TypeScript. The Python package is removed; the CLI commands and their exit codes are unchanged.

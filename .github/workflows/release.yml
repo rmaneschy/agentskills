@@ -40,12 +40,26 @@ jobs:
           npm pack
           (cd skills && zip -r "../agentskills-skills-$VERSION.zip" .)
 
+      # Both steps below are safe to run again for the same tag: a version that is
+      # already in the registry is not republished, and a release that already
+      # exists (for example one created by hand on github.com) receives the files.
       - name: Publish to GitHub Packages
-        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if npm view "@rmaneschy/agentskills@$VERSION" version > /dev/null 2>&1; then
+            echo "@rmaneschy/agentskills@$VERSION is already published; skipping."
+          else
+            npm publish
+          fi
 
-      - name: Create the GitHub Release
+      - name: Create or update the GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" rmaneschy-agentskills-*.tgz agentskills-skills-*.zip --title "$GITHUB_REF_NAME" --generate-notes
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists; uploading the files to it."
+            gh release upload "$GITHUB_REF_NAME" rmaneschy-agentskills-*.tgz agentskills-skills-*.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" rmaneschy-agentskills-*.tgz agentskills-skills-*.zip --title "$GITHUB_REF_NAME" --generate-notes
+          fi
