@@ -49,3 +49,4 @@ Everything read into the main conversation stays there and competes for attentio
 - Parallel subagents must not edit the same files. Give each its own files or its own working copy.
 - A summary can be wrong. Delegation moves the reading out of the context; it does not move the responsibility.
 - A skill marked `agentskills.execution: "subagent"` in its metadata is designed to be run this way.
+- The `agentskills` command comes from this pack's CLI. If it is not installed, run it as `npx github:rmaneschy/agentskills <command>`.

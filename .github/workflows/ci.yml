@@ -10,36 +10,36 @@ permissions:
 
 jobs:
   test:
-    name: test (${{ matrix.os }}, py${{ matrix.python }})
+    name: test (${{ matrix.os }}, node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: ["3.10", "3.13"]
+        node: [20, 22]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.python }}
-      - run: python -m pip install -e ".[dev]"
-      - run: ruff check .
-      - run: ruff format --check .
-      - run: python -m pytest
-      - run: agentskills validate skills --strict
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
 
   package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: "3.12"
-      - run: python -m pip install build
-      - run: python -m build
-      - name: Install the wheel and check the bundled skills
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install the packed tarball in a clean project and use the CLI
         run: |
-          python -m pip install dist/*.whl
-          agentskills install --list
-          agentskills install --target "$RUNNER_TEMP/project"
-          agentskills validate "$RUNNER_TEMP/project/.agents/skills" --strict
+          npm pack
+          mkdir "$RUNNER_TEMP/project" && cd "$RUNNER_TEMP/project"
+          npm init -y > /dev/null
+          npm install "$GITHUB_WORKSPACE"/rmaneschy-agentskills-*.tgz
+          npx agentskills install --target .
+          npx agentskills validate .agents/skills --strict

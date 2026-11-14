@@ -27,7 +27,7 @@ A skill is a directory whose name equals the `name` field of its `SKILL.md`. The
    - a template when the output format matters;
    - a verification step the agent runs before reporting.
 6. **Move detail out.** Keep `SKILL.md` under 500 lines. Put long reference material in `references/`, and say when to read each file ("Read the errors reference if the API returns a non-200 status"). Keep references one level deep.
-7. **Scripts.** Bundle a script in `scripts/` when the agent would otherwise rewrite the same logic each run. Scripts must not prompt, must explain themselves with `--help`, print data to stdout and diagnostics to stderr, and use distinct exit codes. Write them in Python so they run on every operating system.
+7. **Scripts.** Bundle a script in `scripts/` when the agent would otherwise rewrite the same logic each run. Scripts must not prompt, must explain themselves with `--help`, print data to stdout and diagnostics to stderr, and use distinct exit codes. Write them in Node.js (`.mjs`) or Python so they run on every operating system; do not ship shell-only scripts.
 8. **Validate until clean:**
    ```
    agentskills validate <skill-dir>
@@ -44,3 +44,4 @@ Read [references/checklist.md](references/checklist.md) before declaring a skill
 - `metadata` values must be strings: write `version: "1.0"`, not `version: 1.0`.
 - Do not add frontmatter fields the specification does not define; put custom data under `metadata` with a namespaced key.
 - A description that only names the topic ("Helps with PDFs") will not trigger. A description stuffed with keywords from failed test prompts overfits.
+- The `agentskills` command comes from this pack's CLI. If it is not installed, run it as `npx github:rmaneschy/agentskills <command>`.

@@ -1,0 +1,50 @@
+{
+  "name": "@rmaneschy/agentskills",
+  "version": "0.2.0",
+  "description": "TypeScript implementation of the Agent Skills format: validate, discover, disclose, activate and delegate skills, plus a skill pack to share.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Rodrigo Maneschy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmaneschy/agentskills.git"
+  },
+  "keywords": ["agent-skills", "skills", "agents", "llm", "subagents", "cli"],
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "agentskills": "dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "skills", ".claude-plugin", "README.md", "LICENSE", "CHANGELOG.md"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "validate:skills": "node dist/cli.js validate skills --strict",
+    "check": "npm run typecheck && npm run lint && npm run build && npm test && npm run validate:skills"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

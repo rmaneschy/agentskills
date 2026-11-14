@@ -1,0 +1,12 @@
+{
+  "name": "rmaneschy",
+  "description": "Agent Skills pack by Rodrigo Maneschy",
+  "owner": { "name": "Rodrigo Maneschy" },
+  "plugins": [
+    {
+      "name": "rmaneschy-skills",
+      "source": "./",
+      "description": "Skills for authoring skills, keeping context clean with subagents and exploring repositories"
+    }
+  ]
+}

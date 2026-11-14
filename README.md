@@ -1,44 +1,64 @@
 # agentskills
 
-Python implementation of the [Agent Skills](https://agentskills.io) format, plus a pack of skills ready to install in any project.
+A pack of [Agent Skills](https://agentskills.io) to share, and a TypeScript library and CLI that implement the format: validate, discover, disclose, activate and delegate skills.
 
-- **Library and CLI**: parse, validate, discover, disclose, activate and delegate skills.
-- **Skill pack**: the skills in [`skills/`](skills/) ship inside the package.
-- **Subagents**: skills can run in an isolated session so the main conversation receives only a summary.
-- **Neutral**: no model SDK, no vendor API, no shell scripts. Runs on Windows, macOS and Linux with Python 3.10+.
+- **Skill pack** in [`skills/`](skills/): install it with the tool you already use.
+- **Subagents**: a skill can run in an isolated session so the main conversation receives only a summary.
+- **Neutral**: no model SDK, no vendor API, no shell scripts. Node 20+, on Windows, macOS and Linux.
 
-## Install
+## Skills
 
-From a release tag:
+| Skill | Mode | What it is for |
+|---|---|---|
+| [`skill-authoring`](skills/skill-authoring/SKILL.md) | inline | Create or improve a skill so it validates and triggers on the right requests |
+| [`context-isolation`](skills/context-isolation/SKILL.md) | inline | Decide when and how to hand work to a subagent and keep the main context small |
+| [`repo-exploration`](skills/repo-exploration/SKILL.md) | subagent | Answer a question about an unfamiliar repository, read-only, with file references |
 
-```
-pip install "rmaneschy-agentskills @ git+https://github.com/rmaneschy/agentskills@v0.1.0"
-```
+## Install the skills
 
-Without installing:
+Pick **one** method per agent. Installing the same skills twice makes every skill appear twice.
 
-```
-uvx --from git+https://github.com/rmaneschy/agentskills agentskills --help
-pipx run --spec git+https://github.com/rmaneschy/agentskills agentskills --help
-```
-
-From GitHub Packages (container registry):
+### Any agent, with the skills CLI
 
 ```
-docker run --rm -v "$PWD:/work" -w /work ghcr.io/rmaneschy/agentskills install
+npx skills@latest add rmaneschy/agentskills
 ```
 
-GitHub Packages has no Python registry, so the wheel is attached to each GitHub Release and the container image is what goes to GitHub Packages.
+Copies editable files into the agent's skills folder. Add `-a <agent>` to choose the agent and `--skill <name>` to pick one skill. Update with `npx skills@latest update`.
 
-## Use the skill pack
+### Claude Code, as a plugin
 
 ```
-agentskills install --list            # what is bundled
-agentskills install --target .        # copy to ./.agents/skills
-agentskills install repo-exploration --dest .claude/skills
+claude plugin marketplace add rmaneschy/agentskills
+claude plugin install rmaneschy-skills@rmaneschy
 ```
 
-`.agents/skills/` is the cross-client location. Existing skills are kept unless you pass `--force`.
+Turn on auto-update for the marketplace in `/plugin` to follow new commits.
+
+### This package's CLI
+
+```
+npx github:rmaneschy/agentskills install --target .
+npx github:rmaneschy/agentskills install --target . --agent claude-code
+```
+
+`--agent` accepts `universal` (`.agents/skills`, the default), `claude-code`, `cursor` and `copilot`. The CLI records what it installed in `.agentskills-lock.json`: running it again updates untouched skills and leaves the ones you edited alone unless you pass `--force`.
+
+### From GitHub Packages
+
+The package is published as `@rmaneschy/agentskills` on the GitHub Packages npm registry. GitHub requires a token to install from that registry, even for public packages, so each person needs a personal access token with `read:packages` in their `~/.npmrc`:
+
+```
+@rmaneschy:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+```
+
+```
+npm install -g @rmaneschy/agentskills
+agentskills install --target .
+```
+
+If that is too much setup for the people you share with, use one of the three methods above: they need no token while the repository is public.
 
 ## CLI
 
@@ -53,17 +73,17 @@ agentskills install repo-exploration --dest .claude/skills
 | `install [names]` | Copy bundled skills into a project |
 | `new <name> --description ...` | Create a skill from the template |
 
-Data goes to stdout, diagnostics to stderr, nothing prompts. Exit codes are listed in `agentskills --help`.
+Data goes to stdout, diagnostics to stderr, nothing prompts. `agentskills --help` lists every flag and exit code.
 
 ## Library
 
-```python
-from agentskills import Session, build_disclosure, default_scopes, discover
+```ts
+import { Session, buildDisclosure, defaultScopes, discover } from '@rmaneschy/agentskills';
 
-registry = discover(default_scopes("."))  # project > user > bundled
-system_prompt_section = build_disclosure(registry)  # "" when there are no skills
-session = Session(registry)
-content = session.activate("skill-authoring").content
+const registry = discover(defaultScopes({ projectDir: '.' })); // project > user > bundled
+const systemPromptSection = buildDisclosure(registry);         // '' when there are no skills
+const session = new Session(registry);
+const { content } = session.activate('skill-authoring');
 ```
 
 ## Subagents
@@ -91,9 +111,9 @@ The brief is sent on standard input unless an argument contains `{prompt_file}` 
 ## Add a skill to the pack
 
 ```
-agentskills new my-skill --description "What it does. Use when ..." --path skills
-agentskills validate skills --strict
-pytest
+npm run build
+node dist/cli.js new my-skill --description "What it does. Use when ..." --path skills
+npm run check
 ```
 
 See [AGENTS.md](AGENTS.md) for the rules of this repository.
@@ -101,11 +121,14 @@ See [AGENTS.md](AGENTS.md) for the rules of this repository.
 ## Develop
 
 ```
-pip install -e ".[dev]"
-ruff check . && ruff format --check .
-pytest
-agentskills validate skills --strict
+npm ci
+npm run check     # typecheck, lint, build, tests, skill validation
+npm run format    # fix formatting and lint
 ```
+
+## Credits
+
+The layout follows practices from [mattpocock/skills](https://github.com/mattpocock/skills) (flat `skills/` folder, plugin manifest, one install method per agent), [tech-leads-club/agent-skills](https://github.com/tech-leads-club/agent-skills) (lockfile with content hashing, path and symlink guards) and [vercel-labs/skills](https://github.com/vercel-labs/skills) (the `npx skills add` layout). The format is defined by [agentskills.io](https://agentskills.io/specification).
 
 ## License
 

@@ -1,0 +1,7 @@
+{
+  "name": "rmaneschy-skills",
+  "description": "Skills for authoring skills, keeping context clean with subagents and exploring repositories",
+  "author": { "name": "Rodrigo Maneschy" },
+  "repository": "https://github.com/rmaneschy/agentskills",
+  "license": "MIT"
+}
