@@ -42,7 +42,8 @@ jobs:
 
       # Both steps below are safe to run again for the same tag: a version that is
       # already in the registry is not republished, and a release that already
-      # exists (for example one created by hand on github.com) receives the files.
+      # exists (for example one created by hand on github.com) receives only the
+      # files it does not have. An attached file is never deleted or replaced.
       - name: Publish to GitHub Packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,8 +59,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
-            echo "Release $GITHUB_REF_NAME already exists; uploading the files to it."
-            gh release upload "$GITHUB_REF_NAME" rmaneschy-agentskills-*.tgz agentskills-skills-*.zip --clobber
+            echo "Release $GITHUB_REF_NAME already exists; adding the files it does not have."
+            existing="$(gh release view "$GITHUB_REF_NAME" --json assets --jq '.assets[].name')"
+            for file in rmaneschy-agentskills-*.tgz agentskills-skills-*.zip; do
+              if printf '%s\n' "$existing" | grep -Fxq "$file"; then
+                echo "$file is already attached; keeping it."
+              else
+                gh release upload "$GITHUB_REF_NAME" "$file"
+              fi
+            done
           else
             gh release create "$GITHUB_REF_NAME" rmaneschy-agentskills-*.tgz agentskills-skills-*.zip --title "$GITHUB_REF_NAME" --generate-notes
           fi

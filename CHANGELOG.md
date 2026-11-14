@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Release workflow can run again for the same tag: it skips a version that is already published and uploads the files to a release that already exists.
+- Release workflow can run again for the same tag: it skips a version that is already published and adds the missing files to a release that already exists, without replacing attached ones.
 
 ## 0.2.0 - 2026-11-13
 

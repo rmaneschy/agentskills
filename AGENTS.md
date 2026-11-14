@@ -95,7 +95,7 @@ Do not delegate the decision itself: read the cited lines before acting on a sub
 2. Merge to `main`, then tag: `git tag v<version> && git push origin v<version>`.
 3. The `release` workflow runs the checks, publishes `@rmaneschy/agentskills` to the GitHub Packages npm registry and attaches the tarball and a zip of the skills to a GitHub Release.
 
-Create the tag from a terminal, not from the Releases page: a release made by hand uses the tag name you type, and a tag without the `v` prefix does not start the workflow. If a release for the tag already exists, the workflow uploads the files to it.
+Create the tag from a terminal, not from the Releases page: a release made by hand uses the tag name you type, and a tag without the `v` prefix does not start the workflow. If a release for the tag already exists, the workflow adds the files it does not have and leaves attached ones untouched.
 
 `dist/` is not committed. `npm run prepare` builds it, which is what makes `npx github:rmaneschy/agentskills` work.
 
