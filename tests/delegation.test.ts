@@ -160,11 +160,17 @@ describe('cross-platform process start', () => {
   it('resolves executables with PATHEXT on Windows', () => {
     const dir = tempDir();
     fs.writeFileSync(path.join(dir, 'agent.CMD'), '');
-    fs.writeFileSync(path.join(dir, 'tool'), '');
     expect(resolveExecutable('agent', { PATH: dir, PATHEXT: '.EXE;.CMD' }, 'win32')).toBe(
       path.join(dir, 'agent.CMD'),
     );
-    expect(resolveExecutable('tool', { PATH: dir }, 'linux')).toBe(path.join(dir, 'tool'));
-    expect(resolveExecutable('missing', { PATH: dir }, 'linux')).toBeUndefined();
+  });
+
+  it('resolves executables on the host platform', () => {
+    // Uses the real platform: a PATH holding a Windows drive letter cannot be split with the POSIX delimiter.
+    const dir = tempDir();
+    fs.writeFileSync(path.join(dir, 'tool'), '');
+    expect(resolveExecutable('tool', { PATH: dir, PATHEXT: '.EXE' })).toBe(path.join(dir, 'tool'));
+    expect(resolveExecutable('missing', { PATH: dir, PATHEXT: '.EXE' })).toBeUndefined();
+    expect(resolveExecutable(path.join(dir, 'tool'), { PATH: '' })).toBe(path.join(dir, 'tool'));
   });
 });
