@@ -1,6 +1,6 @@
 {
   "name": "@rmaneschy/agentskills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "TypeScript implementation of the Agent Skills format: validate, discover, disclose, activate and delegate skills, plus a skill pack to share.",
   "type": "module",
   "license": "MIT",
@@ -9,7 +9,14 @@
     "type": "git",
     "url": "git+https://github.com/rmaneschy/agentskills.git"
   },
-  "keywords": ["agent-skills", "skills", "agents", "llm", "subagents", "cli"],
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "agents",
+    "llm",
+    "subagents",
+    "cli"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -24,7 +31,14 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist", "skills", ".claude-plugin", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "skills",
+    ".claude-plugin",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepare": "npm run build",

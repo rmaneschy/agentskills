@@ -1,0 +1,20 @@
+[
+  { "query": "what are the business domains in this repo? I need to know where to split it into services", "should_trigger": true, "mode": "MAP" },
+  { "query": "o módulo de cobrança e o de clientes estão muito acoplados, onde eu deveria traçar a fronteira?", "should_trigger": true, "mode": "MAP" },
+  { "query": "we have 40 packages under com.acme.services, which ones belong together?", "should_trigger": true, "mode": "GROUP" },
+  { "query": "reorganize src/ by business area instead of controllers/services/repositories", "should_trigger": true, "mode": "GROUP" },
+  { "query": "three modules send emails to customers with slightly different rules, should that be one thing?", "should_trigger": true, "mode": "CONSOLIDATE" },
+  { "query": "is this Order class good DDD? it's mostly getters and setters and the OrderService does everything", "should_trigger": true, "mode": "REVIEW" },
+  { "query": "refactor Reservation so the rules live in the entity, not in ReservationService", "should_trigger": true, "mode": "REFACTOR" },
+  { "query": "how should I model a voucher that expires and can be revoked?", "should_trigger": true, "mode": "DESIGN" },
+  { "query": "we keep saying 'account' but I think we mean two different things, help me pin it down", "should_trigger": true, "mode": "LANGUAGE" },
+  { "query": "record why billing talks to ordering through events instead of REST", "should_trigger": true, "mode": "LANGUAGE" },
+  { "query": "find copy-pasted code blocks in src/ and remove them", "should_trigger": false, "why": "line-level duplication, linter job" },
+  { "query": "generate a dependency graph of my maven modules and count cycles", "should_trigger": false, "why": "coupling metrics with no domain question" },
+  { "query": "add a CRUD endpoint for the Tag entity with Spring Data REST", "should_trigger": false, "why": "plain CRUD" },
+  { "query": "design the Kong gateway routes and rate limits for our mobile app", "should_trigger": false, "why": "infrastructure design" },
+  { "query": "my React Native screen re-renders too much, how do I split the components?", "should_trigger": false, "why": "UI components, not domain components" },
+  { "query": "write a JPA entity mapping for this table with a composite key", "should_trigger": false, "why": "persistence mapping" },
+  { "query": "set up a domain name and DNS for the new service", "should_trigger": false, "why": "'domain' as in DNS" },
+  { "query": "write an ADR template for our team wiki", "should_trigger": false, "why": "generic template, no project decision" }
+]

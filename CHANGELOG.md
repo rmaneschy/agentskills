@@ -1,7 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 - 2026-11-18
 
+- New bundled skill: `ddd-domain-architect`, to map, group, review and refactor a business domain with Domain-Driven Design. It ships a Portuguese translation of its instructions (`SKILL-pt_BR.md`).
+- `validate` no longer reports `reference-depth` for sample links inside a fenced code block of a reference file.
 - Release workflow can run again for the same tag: it skips a version that is already published and adds the missing files to a release that already exists, without replacing attached ones.
 
 ## 0.2.0 - 2026-11-13
