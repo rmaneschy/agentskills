@@ -13,6 +13,7 @@ A pack of [Agent Skills](https://agentskills.io) to share, and a TypeScript libr
 | [`skill-authoring`](skills/skill-authoring/SKILL.md) | inline | Create or improve a skill so it validates and triggers on the right requests |
 | [`context-isolation`](skills/context-isolation/SKILL.md) | inline | Decide when and how to hand work to a subagent and keep the main context small |
 | [`repo-exploration`](skills/repo-exploration/SKILL.md) | subagent | Answer a question about an unfamiliar repository, read-only, with file references |
+| [`ddd-domain-architect`](skills/ddd-domain-architect/SKILL.md) | inline | Map, group, review and refactor a business domain in code with Domain-Driven Design |
 
 ## Install the skills
 
@@ -132,4 +133,4 @@ The layout follows practices from [mattpocock/skills](https://github.com/mattpoc
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). `ddd-domain-architect` adapts material from other authors, part of it under CC BY 4.0; its attribution is in [`skills/ddd-domain-architect/NOTICE.md`](skills/ddd-domain-architect/NOTICE.md).

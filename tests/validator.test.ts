@@ -126,4 +126,30 @@ describe('validator', () => {
     });
     expect(codes(validate(nested), 'warning')).toContain('reference-depth');
   });
+
+  it('ignores sample links inside fenced code blocks of a reference file', () => {
+    const root = tempDir();
+    const sample = [
+      'Glossary map format:',
+      '',
+      '```md',
+      '- [Ordering](./src/ordering/GLOSSARY.md)',
+      '```',
+    ].join('\n');
+    const fenced = makeSkill('refs-fenced', {
+      root,
+      body: 'See [guide](references/guide.md).',
+      files: { 'references/guide.md': sample },
+    });
+    expect(validate(fenced)).toEqual([]);
+    const outside = makeSkill('refs-after-fence', {
+      root,
+      body: 'See [guide](references/guide.md).',
+      files: {
+        'references/guide.md': `${sample}\n\nMore in [deep](references/deep.md)`,
+        'references/deep.md': 'x',
+      },
+    });
+    expect(codes(validate(outside), 'warning')).toContain('reference-depth');
+  });
 });

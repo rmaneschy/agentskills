@@ -85,6 +85,22 @@ function relativeTargets(text: string): { links: Set<string>; bare: Set<string> 
   return { links, bare };
 }
 
+/** Drops fenced code blocks: what a reference file shows inside one is sample output, not a file to load. */
+function withoutFencedBlocks(text: string): string {
+  const kept: string[] = [];
+  let fence: string | undefined;
+  for (const line of text.split(/\r?\n/)) {
+    const marker = /^\s*(`{3,}|~{3,})/.exec(line)?.[1];
+    if (fence === undefined) {
+      if (marker === undefined) kept.push(line);
+      else fence = marker;
+    } else if (marker !== undefined && marker[0] === fence[0] && marker.length >= fence.length) {
+      fence = undefined;
+    }
+  }
+  return kept.join('\n');
+}
+
 function checkReferences(skillDir: string, body: string, skillFile: string): Diagnostic[] {
   const out: Diagnostic[] = [];
   const { links, bare } = relativeTargets(body);
@@ -99,7 +115,7 @@ function checkReferences(skillDir: string, body: string, skillFile: string): Dia
         ),
       );
     } else if (resolved.toLowerCase().endsWith('.md') && fs.statSync(resolved).isFile()) {
-      const nested = relativeTargets(fs.readFileSync(resolved, 'utf8'));
+      const nested = relativeTargets(withoutFencedBlocks(fs.readFileSync(resolved, 'utf8')));
       const nestedMd = [...nested.links, ...nested.bare]
         .filter((t) => t.toLowerCase().endsWith('.md'))
         .sort();
